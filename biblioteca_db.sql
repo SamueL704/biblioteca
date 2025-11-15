@@ -87,9 +87,15 @@ GRANT SELECT ON lista_emprestimo TO dev_junior;
 INSERT INTO usuarios (nome, email, senha)
 VALUES ('João Silva', 'joao.silva@email.com', '12345');
 
+INSERT INTO usuarios (nome, email, senha)
+VALUES ('samuel Silva', 'samuel.silva@email.com', '12345');
+
 -- Inserindo um livro
 INSERT INTO livros (titulo)
 VALUES ('Dom Casmurro');
+
+INSERT INTO livros (titulo)
+VALUES ('Código Limpo');
 
 -- Inserindo um empréstimo (referenciando o usuário e o livro criados)
 INSERT INTO emprestimos (livro_id, usuario_id, status_emprestimo)
