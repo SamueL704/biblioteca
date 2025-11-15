@@ -25,7 +25,7 @@ def get_connection():
         )
 
 @app.route('/emprestimos', methods = ['GET']) 
-def fetch_data():
+def get_view_emprestimo():
     conn = None
     try:
         conn = get_connection()
@@ -65,43 +65,32 @@ def add_emprestimo():
             cur.close()
             conn.close()
 
+#melhorar para atualizar qualquer coisa
 @app.route('/emprestimos/<id_emprestimo>', methods=['PATCH'])
 def update_emprestimo(id_emprestimo):
     data = request.get_json()
-    status = data.get('status_emprestimo')
+    if not data:
+        return jsonify({'error': 'Dados incompletos'}), 400
+    
+    status = ['livro_id', 'usuario_id', 'status_emprestimo']
 
     conn = None
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute('UPDATE emprestimos SET status_emprestimo = %s WHERE id = %s', (str(status), id_emprestimo))
+        for key, value in data.items():
+            if key in status:
+                cur.execute(f'UPDATE emprestimos SET {key} = %s WHERE id = %s', (str(value), id_emprestimo))
+            else:
+                return jsonify(f"message: key {key} incorreta ou inexistente")
         conn.commit()
-        return jsonify({'message': 'status atualizado com sucesso'}), 200
+        return jsonify({'message': 'dados atualizados com sucesso'}), 200
     except psycopg2.Error as e:
         return jsonify({'erro': str(e)}), 500
     finally:
         if conn:
             cur.close()
             conn.close()
-    '''
-    data = request.get_json()
-
-    for key, value in data.items():
-        setattr(key, value)
-
-    conn = None
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-        conn.commit()
-        return jsonify({'message': 'emprestimo atualizado com sucesso'}), 200
-    except psycopg2.Error as e:
-        return jsonify({'erro': str(e)}), 500
-    finally:
-        if conn:
-            cur.close()
-            conn.close()'''
-
 
 if __name__ == '__main__':
     app.run(debug=True)
