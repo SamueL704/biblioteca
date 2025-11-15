@@ -40,7 +40,7 @@ def get_view_emprestimo():
             cur.close()
             conn.close()
 
-@app.route('/emprestimos', methods = ['POST'])
+@app.route('/emprestimo/insert', methods = ['POST'])
 def add_emprestimo():
     data = request.get_json()
     id_livro = data.get('livro_id')
@@ -66,13 +66,12 @@ def add_emprestimo():
             conn.close()
 
 #melhorar para atualizar qualquer coisa
-@app.route('/emprestimos/<id_emprestimo>', methods=['PATCH'])
+@app.route('/emprestimo/update/<id_emprestimo>', methods=['PATCH'])
 def update_emprestimo(id_emprestimo):
+    status = ['livro_id', 'usuario_id', 'status_emprestimo']
     data = request.get_json()
     if not data:
         return jsonify({'error': 'Dados incompletos'}), 400
-    
-    status = ['livro_id', 'usuario_id', 'status_emprestimo']
 
     conn = None
     try:
@@ -85,6 +84,22 @@ def update_emprestimo(id_emprestimo):
                 return jsonify(f"message: key {key} incorreta ou inexistente")
         conn.commit()
         return jsonify({'message': 'dados atualizados com sucesso'}), 200
+    except psycopg2.Error as e:
+        return jsonify({'erro': str(e)}), 500
+    finally:
+        if conn:
+            cur.close()
+            conn.close()
+
+@app.route('/emprestimo/delete/<id_emprestimo>', methods = ["DELETE"])
+def delete_emprestimo(id_emprestimo):
+    conn = None
+    try: 
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM emprestimos WHERE id = %s",(id_emprestimo))
+        conn.commit()
+        return jsonify("message: Dados deletados com sucesso")
     except psycopg2.Error as e:
         return jsonify({'erro': str(e)}), 500
     finally:
