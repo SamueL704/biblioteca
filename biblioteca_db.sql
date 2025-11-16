@@ -96,7 +96,3 @@ VALUES ('Dom Casmurro');
 
 INSERT INTO livros (titulo)
 VALUES ('Código Limpo');
-
--- Inserindo um empréstimo (referenciando o usuário e o livro criados)
-INSERT INTO emprestimos (livro_id, usuario_id, status_emprestimo)
-VALUES (1, 1, 'Em andamento');
