@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
 from flask import Flask, request, jsonify
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -40,7 +39,7 @@ def get_view_emprestimo():
             cur.close()
             conn.close()
 
-@app.route('/emprestimo/insert', methods = ['POST'])
+@app.route('/emprestimos/insert', methods = ['POST'])
 def add_emprestimo():
     data = request.get_json()
     id_livro = data.get('livro_id')
@@ -66,7 +65,7 @@ def add_emprestimo():
             conn.close()
 
 #melhorar para atualizar qualquer coisa
-@app.route('/emprestimo/update/<id_emprestimo>', methods=['PATCH'])
+@app.route('/emprestimos/update/<id_emprestimo>', methods=['PATCH'])
 def update_emprestimo(id_emprestimo):
     status = ['livro_id', 'usuario_id', 'status_emprestimo']
     data = request.get_json()
@@ -91,7 +90,7 @@ def update_emprestimo(id_emprestimo):
             cur.close()
             conn.close()
 
-@app.route('/emprestimo/delete/<id_emprestimo>', methods = ["DELETE"])
+@app.route('/emprestimos/delete/<id_emprestimo>', methods = ["DELETE"])
 def delete_emprestimo(id_emprestimo):
     conn = None
     try: 
